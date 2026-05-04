@@ -397,6 +397,25 @@ tbody td.td-muted { color: var(--text-muted); }
 }
 .chart-selector-group select { max-width: 220px; }
 
+/* ===== BADGES ===== */
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.badge--admin {
+  background: #FEF3C7;
+  color: #D97706;
+  border: 1px solid #FDE68A;
+}
+.badge--user {
+  background: var(--surface);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 860px) {
   .add-form-layout {

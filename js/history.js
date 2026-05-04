@@ -209,11 +209,13 @@ function getTableHeaders(isMale) {
   return [
     ...common,
     ...meas,
-    { key: 'waist',    label: 'เอว' },
-    { key: 'hips',     label: 'สะโพก' },
-    { key: 'thigh',    label: 'ต้นขา' },
-    { key: 'upperArm', label: 'ต้นแขน' },
-    { key: 'notes',    label: 'หมายเหตุ' },
+    { key: 'waist',     label: 'เอว' },
+    { key: 'hips',      label: 'สะโพก' },
+    { key: 'thighL',    label: 'ต้นขา ซ้าย' },
+    { key: 'thighR',    label: 'ต้นขา ขวา' },
+    { key: 'upperArmL', label: 'ต้นแขน ซ้าย' },
+    { key: 'upperArmR', label: 'ต้นแขน ขวา' },
+    { key: 'notes',     label: 'หมายเหตุ' },
   ];
 }
 
@@ -222,8 +224,10 @@ function getMeasurementChartFields(gender) {
     { key: 'chest',     label: 'อก' },
     { key: 'waist',     label: 'เอว' },
     { key: 'hips',      label: 'สะโพก' },
-    { key: 'thigh',     label: 'ต้นขา' },
-    { key: 'upperArm',  label: 'ต้นแขน' },
+    { key: 'thighL',    label: 'ต้นขา ซ้าย' },
+    { key: 'thighR',    label: 'ต้นขา ขวา' },
+    { key: 'upperArmL', label: 'ต้นแขน ซ้าย' },
+    { key: 'upperArmR', label: 'ต้นแขน ขวา' },
   ];
   if (gender === 'male') {
     return [{ key: 'shoulders', label: 'ไหล่' }, ...common];

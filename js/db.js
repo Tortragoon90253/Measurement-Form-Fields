@@ -37,3 +37,24 @@ async function getLatestMeasurement(uid) {
 async function deleteMeasurement(uid, docId) {
   return db.collection('users').doc(uid).collection('measurements').doc(docId).delete();
 }
+
+// ===== ADMIN FUNCTIONS =====
+
+async function getAllUsers() {
+  const snap = await db.collection('users').orderBy('createdAt', 'desc').get();
+  return snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+}
+
+async function deleteUserData(uid) {
+  const profile = await getUserProfile(uid);
+  const measSnap = await db.collection('users').doc(uid).collection('measurements').get();
+  for (let i = 0; i < measSnap.docs.length; i += 400) {
+    const batch = db.batch();
+    measSnap.docs.slice(i, i + 400).forEach(d => batch.delete(d.ref));
+    await batch.commit();
+  }
+  if (profile && profile.username) {
+    await db.collection('usernames').doc(profile.username.toLowerCase()).delete();
+  }
+  await db.collection('users').doc(uid).delete();
+}

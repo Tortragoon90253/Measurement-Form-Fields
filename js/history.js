@@ -2,7 +2,10 @@
 
 let _histWeightChart = null;
 let _histMeasChart   = null;
+let _histBMIChart    = null;
 let _allRecords      = [];
+
+const BMI_TARGET_KEY = 'bmi_target';
 
 async function initHistory() {
   const { user, profile } = window.appState;
@@ -13,6 +16,7 @@ async function initHistory() {
   // Destroy previous charts
   if (_histWeightChart) { _histWeightChart.destroy(); _histWeightChart = null; }
   if (_histMeasChart)   { _histMeasChart.destroy();   _histMeasChart   = null; }
+  if (_histBMIChart)    { _histBMIChart.destroy();    _histBMIChart    = null; }
 
   try {
     _allRecords = await getMeasurements(user.uid);
@@ -43,6 +47,9 @@ async function initHistory() {
       _histWeightChart = renderMiniWeightChart('hist-weight-chart', _allRecords);
       const firstField = getMeasurementChartFields(gender)[0];
       _histMeasChart   = renderMeasurementChart('hist-meas-chart', _allRecords, firstField.key, firstField.label);
+      const savedTarget = parseFloat(localStorage.getItem(BMI_TARGET_KEY)) || 22.0;
+      _histBMIChart = renderBMIChart('hist-bmi-chart', _allRecords, savedTarget);
+      bindBMITargetInput();
     } else {
       document.getElementById('hist-charts-area').innerHTML =
         '<p style="color:var(--text-muted);font-size:0.9rem;padding:1rem">ต้องการข้อมูลอย่างน้อย 2 รายการเพื่อแสดงกราฟ</p>';
@@ -167,6 +174,37 @@ function renderHistoryContent(gender) {
         </div>
         <div class="chart-wrapper"><canvas id="hist-meas-chart"></canvas></div>
       </div>
+    </div>
+
+    <!-- BMI Chart (full width) -->
+    <div class="chart-card" id="hist-bmi-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1rem">
+        <h3 style="margin:0">แนวโน้ม BMI</h3>
+        <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap">
+          <label style="font-size:0.85rem;font-weight:600;color:var(--text-muted);white-space:nowrap">
+            🎯 เป้าหมาย BMI:
+          </label>
+          <input type="number" id="bmi-target-input"
+            min="10" max="40" step="0.1"
+            style="width:80px;padding:0.4rem 0.6rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font);font-size:0.95rem;font-weight:600;color:var(--primary);text-align:center">
+          <button id="bmi-target-save" class="btn btn-primary" style="padding:0.4rem 0.9rem;font-size:0.85rem">
+            ตั้งค่า
+          </button>
+        </div>
+      </div>
+
+      <!-- BMI Zone Legend -->
+      <div class="bmi-zone-legend">
+        <span class="bmi-zone-chip" style="background:rgba(59,130,246,0.12);color:#1D4ED8">น้ำหนักน้อย &lt;18.5</span>
+        <span class="bmi-zone-chip" style="background:rgba(22,163,74,0.12);color:#15803D">ปกติ 18.5–22.9</span>
+        <span class="bmi-zone-chip" style="background:rgba(202,138,4,0.12);color:#B45309">น้ำหนักเกิน 23–24.9</span>
+        <span class="bmi-zone-chip" style="background:rgba(234,88,12,0.12);color:#C2410C">อ้วน 25–29.9</span>
+        <span class="bmi-zone-chip" style="background:rgba(220,38,38,0.12);color:#B91C1C">อ้วนมาก ≥30</span>
+      </div>
+
+      <div class="chart-wrapper" style="height:280px;margin-top:0.75rem">
+        <canvas id="hist-bmi-chart"></canvas>
+      </div>
     </div>`;
 }
 
@@ -261,6 +299,30 @@ function applyFilters(gender, uid) {
     });
   }
   renderTable(filtered, gender, uid);
+}
+
+function bindBMITargetInput() {
+  const input   = document.getElementById('bmi-target-input');
+  const saveBtn = document.getElementById('bmi-target-save');
+  if (!input || !saveBtn) return;
+
+  const saved = parseFloat(localStorage.getItem(BMI_TARGET_KEY)) || 22.0;
+  input.value = saved;
+
+  saveBtn.addEventListener('click', () => {
+    const val = parseFloat(input.value);
+    if (!val || val < 10 || val > 40) {
+      showToast('กรุณากรอกค่า BMI เป้าหมายระหว่าง 10–40', 'error');
+      return;
+    }
+    localStorage.setItem(BMI_TARGET_KEY, val);
+    if (_histBMIChart) { _histBMIChart.destroy(); _histBMIChart = null; }
+    _histBMIChart = renderBMIChart('hist-bmi-chart', _allRecords, val);
+    showToast(`ตั้ง BMI เป้าหมาย ${val} แล้ว`, 'success');
+  });
+
+  // Also allow pressing Enter
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') saveBtn.click(); });
 }
 
 function getTableHeaders(isMale) {

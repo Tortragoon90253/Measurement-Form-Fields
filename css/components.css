@@ -477,6 +477,15 @@ tbody td.td-muted { color: var(--text-muted); }
   .profile-layout { grid-template-columns: 1fr; }
 }
 
+/* ===== BMI ZONE LEGEND ===== */
+.bmi-zone-legend {
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+}
+.bmi-zone-chip {
+  font-size: 0.75rem; font-weight: 600; padding: 0.2rem 0.65rem;
+  border-radius: 50px; white-space: nowrap;
+}
+
 /* ===== BADGES ===== */
 .badge {
   display: inline-block;

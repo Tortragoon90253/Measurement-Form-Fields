@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ตัวอย่าง — หน้าประวัติการบันทึก</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --primary: #2E86AB; --primary-dark: #1e6a8a; --primary-light: #d4edf7;
+      --secondary: #A8D5BA; --accent: #F6AE2D; --danger: #E63946;
+      --danger-light: #fde8ea; --success: #2DC653; --warning: #FF9800;
+      --surface: #F7F9FC; --surface-2: #ffffff; --border: #e2e8f0;
+      --text: #1C2B36; --text-muted: #6B8CA4; --text-light: #94aab8;
+      --radius-sm: 6px; --radius: 12px; --radius-lg: 18px;
+      --shadow-sm: 0 1px 4px rgba(46,134,171,0.08);
+      --shadow: 0 2px 16px rgba(46,134,171,0.12);
+      --nav-height: 60px; --font: 'Sarabun', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); font-size: 16px; color: var(--text); background: var(--surface); }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height);
+      background: var(--primary); box-shadow: var(--shadow); z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 0.5rem; color: #fff; font-weight: 700; font-size: 1.1rem; }
+    .nav-links { display: flex; align-items: center; gap: 0.25rem; }
+    .nav-link {
+      color: rgba(255,255,255,0.8); padding: 0.4rem 0.8rem; border-radius: var(--radius-sm);
+      font-size: 0.95rem; font-weight: 500; text-decoration: none;
+    }
+    .nav-link.active { background: rgba(255,255,255,0.18); color: #fff; }
+    .nav-link:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .nav-user { color: rgba(255,255,255,0.7); font-size: 0.85rem; padding: 0 0.5rem; }
+    .btn-logout {
+      background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+      padding: 0.35rem 0.9rem; border-radius: var(--radius-sm); font-size: 0.9rem; cursor: pointer;
+      font-family: var(--font);
+    }
+
+    /* PAGE */
+    .page { padding-top: calc(var(--nav-height) + 1.5rem); }
+    .page-container { max-width: 1100px; margin: 0 auto; padding: 0 1.25rem 3rem; }
+    .page-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 1rem; margin-bottom: 2rem;
+    }
+    .page-header h2 { font-size: 1.5rem; font-weight: 700; }
+    .page-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.2rem; }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 0.4rem; padding: 0.65rem 1.4rem; border-radius: var(--radius-sm);
+      font-size: 0.95rem; font-weight: 600; border: 2px solid transparent;
+      text-decoration: none; cursor: pointer; font-family: var(--font);
+    }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-danger {
+      background: transparent; color: var(--danger); border-color: transparent;
+      padding: 0.35rem 0.6rem; font-size: 0.82rem;
+    }
+    .btn-danger:hover { background: var(--danger-light); }
+
+    /* FILTER BAR */
+    .filter-bar {
+      display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; margin-bottom: 1.25rem;
+    }
+    .filter-group { display: flex; flex-direction: column; gap: 0.3rem; }
+    .filter-group label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
+    .filter-group input[type="date"] {
+      padding: 0.5rem 0.8rem; border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); font-family: var(--font); font-size: 0.9rem;
+      color: var(--text); background: var(--surface-2);
+    }
+    .btn-secondary {
+      background: var(--surface-2); color: var(--primary); border: 2px solid var(--border);
+      font-size: 0.9rem; padding: 0.5rem 1rem; border-radius: var(--radius-sm);
+      font-family: var(--font); cursor: pointer; align-self: flex-end;
+    }
+
+    /* TABLE */
+    .table-card {
+      background: var(--surface-2); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); overflow: hidden; margin-bottom: 1.5rem;
+    }
+    .table-wrapper { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    thead th {
+      background: var(--surface); color: var(--text-muted); font-size: 0.78rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--surface); }
+    tbody td { padding: 0.7rem 1rem; color: var(--text); vertical-align: middle; }
+    td.muted { color: var(--text-muted); font-size: 0.85rem; }
+    .td-actions { text-align: right; }
+
+    /* BMI BADGE */
+    .bmi-badge {
+      display: inline-block; padding: 0.15rem 0.5rem; border-radius: 50px;
+      font-size: 0.72rem; font-weight: 600; margin-left: 0.3rem;
+    }
+
+    /* CHARTS */
+    .charts-area { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 760px) { .charts-area { grid-template-columns: 1fr; } }
+    .chart-card {
+      background: var(--surface-2); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); padding: 1.5rem;
+    }
+    .chart-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; color: var(--text); }
+    .chart-wrapper { position: relative; height: 200px; }
+    .chart-selector-group { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+    .chart-selector-group label { font-size: 0.88rem; font-weight: 600; color: var(--text-muted); }
+    .chart-selector-group select {
+      border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      padding: 0.4rem 0.7rem; font-family: var(--font); font-size: 0.88rem;
+      color: var(--text); background: var(--surface-2); max-width: 200px;
+    }
+
+    /* LABEL NOTE */
+    .note-box {
+      background: #fffbeb; border: 1px solid #fde68a; border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem; font-size: 0.82rem; color: #92400e; margin-bottom: 1.5rem;
+      display: flex; align-items: flex-start; gap: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="13" stroke="#fff" stroke-width="2"/>
+      <path d="M8 14 L12 10 L16 16 L20 11" stroke="#F6AE2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Body Tracker
+  </div>
+  <div class="nav-links">
+    <a href="#" class="nav-link">หน้าหลัก</a>
+    <a href="#" class="nav-link">เพิ่มข้อมูล</a>
+    <a href="#" class="nav-link active">ประวัติ</a>
+    <span class="nav-user">สมชาย ใจดี</span>
+    <button class="btn-logout">ออกจากระบบ</button>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="page-container">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div>
+        <h2>ประวัติการบันทึก</h2>
+        <p class="page-subtitle">ดูพัฒนาการและแนวโน้มของคุณ</p>
+      </div>
+      <a href="#" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        เพิ่มข้อมูล
+      </a>
+    </div>
+
+    <!-- NOTE -->
+    <div class="note-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      นี่คือตัวอย่างข้อมูลจำลอง เพื่อแสดงหน้าตาจริงของหน้าประวัติการบันทึกหลัง Login
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <div class="filter-group">
+        <label>จากวันที่</label>
+        <input type="date" value="2025-01-01">
+      </div>
+      <div class="filter-group">
+        <label>ถึงวันที่</label>
+        <input type="date" value="2025-05-04">
+      </div>
+      <button class="btn-secondary">รีเซ็ต</button>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-card">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>วันที่</th>
+              <th>น้ำหนัก (kg)</th>
+              <th>BMI</th>
+              <th>อก</th>
+              <th>เอว</th>
+              <th>สะโพก</th>
+              <th>ต้นขา ซ้าย</th>
+              <th>ต้นขา ขวา</th>
+              <th>ต้นแขน ซ้าย</th>
+              <th>ต้นแขน ขวา</th>
+              <th>หมายเหตุ</th>
+              <th class="td-actions">ลบ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>4 พ.ค. 2568</td>
+              <td><strong>72.5</strong></td>
+              <td>23.1 <span class="bmi-badge" style="color:#2E86AB;background:#d4edf7">ปกติ</span></td>
+              <td>96 cm</td>
+              <td>82 cm</td>
+              <td>94 cm</td>
+              <td>55 cm</td>
+              <td>54 cm</td>
+              <td>33 cm</td>
+              <td>33.5 cm</td>
+              <td class="muted">หลังออกกำลังกาย</td>
+              <td class="td-actions">
+                <button class="btn btn-danger">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>20 เม.ย. 2568</td>
+              <td><strong>73.8</strong></td>
+              <td>23.5 <span class="bmi-badge" style="color:#2E86AB;background:#d4edf7">ปกติ</span></td>
+              <td>97 cm</td>
+              <td>84 cm</td>
+              <td>95 cm</td>
+              <td>56 cm</td>
+              <td>56 cm</td>
+              <td>34 cm</td>
+              <td>34 cm</td>
+              <td class="muted">–</td>
+              <td class="td-actions">
+                <button class="btn btn-danger">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>5 เม.ย. 2568</td>
+              <td><strong>75.0</strong></td>
+              <td>23.9 <span class="bmi-badge" style="color:#2E86AB;background:#d4edf7">ปกติ</span></td>
+              <td>98 cm</td>
+              <td>85 cm</td>
+              <td>96 cm</td>
+              <td>57 cm</td>
+              <td>57.5 cm</td>
+              <td>34.5 cm</td>
+              <td>34.5 cm</td>
+              <td class="muted">–</td>
+              <td class="td-actions">
+                <button class="btn btn-danger">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>18 มี.ค. 2568</td>
+              <td><strong>77.2</strong></td>
+              <td>24.6 <span class="bmi-badge" style="color:#FF9800;background:#fff3e0">น้ำหนักเกิน</span></td>
+              <td>99 cm</td>
+              <td>87 cm</td>
+              <td>97 cm</td>
+              <td>58 cm</td>
+              <td>58 cm</td>
+              <td>35 cm</td>
+              <td>35 cm</td>
+              <td class="muted">ช่วงเริ่มต้น</td>
+              <td class="td-actions">
+                <button class="btn btn-danger">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>1 มี.ค. 2568</td>
+              <td><strong>79.5</strong></td>
+              <td>25.3 <span class="bmi-badge" style="color:#FF9800;background:#fff3e0">น้ำหนักเกิน</span></td>
+              <td>101 cm</td>
+              <td>89 cm</td>
+              <td>99 cm</td>
+              <td>60 cm</td>
+              <td>60 cm</td>
+              <td>36 cm</td>
+              <td>36.5 cm</td>
+              <td class="muted">–</td>
+              <td class="td-actions">
+                <button class="btn btn-danger">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="charts-area">
+      <div class="chart-card">
+        <h3>แนวโน้มน้ำหนัก</h3>
+        <div class="chart-wrapper">
+          <canvas id="weight-chart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-selector-group">
+          <label>แสดงกราฟ:</label>
+          <select id="meas-select">
+            <option value="chest">อก</option>
+            <option value="waist" selected>เอว</option>
+            <option value="hips">สะโพก</option>
+            <option value="thighL">ต้นขา ซ้าย</option>
+            <option value="thighR">ต้นขา ขวา</option>
+            <option value="upperArmL">ต้นแขน ซ้าย</option>
+            <option value="upperArmR">ต้นแขน ขวา</option>
+          </select>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="meas-chart"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const labels  = ['1 มี.ค.', '18 มี.ค.', '5 เม.ย.', '20 เม.ย.', '4 พ.ค.'];
+const weights = [79.5, 77.2, 75.0, 73.8, 72.5];
+
+const datasets = {
+  waist:     [89, 87, 85, 84, 82],
+  chest:     [101, 99, 98, 97, 96],
+  hips:      [99, 97, 96, 95, 94],
+  thighL:    [60, 58, 57, 56, 55],
+  thighR:    [60, 58, 57.5, 56, 54],
+  upperArmL: [36, 35, 34.5, 34, 33],
+  upperArmR: [36.5, 35, 34.5, 34, 33.5],
+};
+
+const chartDefaults = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { grid: { color: '#e2e8f0' }, ticks: { font: { family: 'Sarabun', size: 11 }, color: '#6B8CA4' } },
+    y: { grid: { color: '#e2e8f0' }, ticks: { font: { family: 'Sarabun', size: 11 }, color: '#6B8CA4' } }
+  }
+};
+
+// Weight chart
+const wCtx = document.getElementById('weight-chart').getContext('2d');
+new Chart(wCtx, {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [{
+      data: weights, label: 'น้ำหนัก (kg)',
+      borderColor: '#2E86AB', backgroundColor: 'rgba(46,134,171,0.1)',
+      borderWidth: 2.5, tension: 0.35, fill: true,
+      pointBackgroundColor: '#2E86AB', pointRadius: 4, pointHoverRadius: 6
+    }]
+  },
+  options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y} kg` } } } }
+});
+
+// Measurement chart
+const mCtx = document.getElementById('meas-chart').getContext('2d');
+let measChart = new Chart(mCtx, {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [{
+      data: datasets.waist, label: 'เอว',
+      borderColor: '#F6AE2D', backgroundColor: 'rgba(246,174,45,0.1)',
+      borderWidth: 2.5, tension: 0.35, fill: true,
+      pointBackgroundColor: '#F6AE2D', pointRadius: 4, pointHoverRadius: 6
+    }]
+  },
+  options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y} cm` } } } }
+});
+
+const colors = {
+  chest:'#2E86AB', waist:'#F6AE2D', hips:'#A8D5BA',
+  thighL:'#E63946', thighR:'#E63946', upperArmL:'#9B5DE5', upperArmR:'#9B5DE5'
+};
+
+document.getElementById('meas-select').addEventListener('change', function() {
+  const key = this.value;
+  const color = colors[key] || '#2E86AB';
+  measChart.data.datasets[0].data = datasets[key];
+  measChart.data.datasets[0].borderColor = color;
+  measChart.data.datasets[0].backgroundColor = color.replace(')', ',0.1)').replace('rgb(','rgba(') || 'rgba(46,134,171,0.1)';
+  measChart.data.datasets[0].pointBackgroundColor = color;
+  measChart.update();
+});
+</script>
+</body>
+</html>

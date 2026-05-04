@@ -34,6 +34,7 @@
         <li><a href="#add" class="nav-link" data-page="add">เพิ่มข้อมูล</a></li>
         <li><a href="#history" class="nav-link" data-page="history">ประวัติ</a></li>
         <li id="nav-admin-li" class="hidden"><a href="#admin" class="nav-link" data-page="admin">จัดการผู้ใช้</a></li>
+        <li><a href="#profile" class="nav-link" data-page="profile">โปรไฟล์</a></li>
         <li class="nav-user-info"><span id="nav-username"></span></li>
         <li><button id="logout-btn" class="btn-nav-logout">ออกจากระบบ</button></li>
       </ul>
@@ -219,6 +220,21 @@
       </div>
     </section>
 
+    <!-- PROFILE PAGE -->
+    <section id="page-profile" class="page hidden">
+      <div class="page-container">
+        <div class="page-header">
+          <div>
+            <h2>โปรไฟล์ของฉัน</h2>
+            <p class="page-subtitle">แก้ไขข้อมูลส่วนตัวและรหัสผ่าน</p>
+          </div>
+        </div>
+        <div id="profile-content">
+          <div class="loading-state"><div class="spinner"></div><p>กำลังโหลด...</p></div>
+        </div>
+      </div>
+    </section>
+
     <!-- ADMIN PAGE -->
     <section id="page-admin" class="page hidden">
       <div class="page-container">
@@ -251,6 +267,7 @@
   <script src="js/history.js"></script>
   <script src="js/charts.js"></script>
   <script src="js/admin.js"></script>
+  <script src="js/profile.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

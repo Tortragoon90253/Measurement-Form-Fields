@@ -505,6 +505,36 @@ tbody td.td-muted { color: var(--text-muted); }
   border: 1px solid var(--border);
 }
 
+/* ===== UNIT TOGGLE ===== */
+.unit-toggle {
+  display: inline-flex;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--card-bg);
+}
+.unit-toggle__btn {
+  padding: 0.28rem 0.75rem;
+  font-size: 0.8rem;
+  font-family: var(--font);
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.unit-toggle__btn.active {
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+}
+.unit-toggle__btn:not(.active):hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 860px) {
   .add-form-layout {

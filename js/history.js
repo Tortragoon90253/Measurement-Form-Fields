@@ -4,8 +4,10 @@ let _histWeightChart = null;
 let _histMeasChart   = null;
 let _histBMIChart    = null;
 let _allRecords      = [];
+let _histUnitInch    = false;
 
 async function initHistory() {
+  _histUnitInch = false;
   const { user, profile } = window.appState;
   const content = document.getElementById('history-content');
 
@@ -38,7 +40,7 @@ async function initHistory() {
 
     renderProgressSummary(_allRecords, gender, profile);
     renderTable(_allRecords, gender, user.uid);
-    bindHistoryFilters(gender, user.uid);
+    bindHistoryFilters(gender, user.uid, profile);
 
     // Charts
     if (_allRecords.length > 1) {
@@ -70,12 +72,17 @@ function renderProgressSummary(records, gender, profile) {
   const first  = records[records.length - 1];
   const prev   = records.length > 1 ? records[1] : null;
 
-  const fields = getMeasurementFieldDefs(gender);
-  const allKeys = [
-    { key: 'weightKg', label: 'น้ำหนัก', unit: 'kg', icon: '⚖️' },
-    { key: 'bmi',      label: 'BMI',      unit: '',   icon: '📊' },
-    ...fields.map(f => ({ key: f.key, label: f.label, unit: 'cm', icon: '📏', color: f.color }))
+  const isInch   = _histUnitInch;
+  const measUnit = isInch ? 'นิ้ว' : 'cm';
+  const fields   = getMeasurementFieldDefs(gender);
+  const allKeys  = [
+    { key: 'weightKg', label: 'น้ำหนัก', unit: 'kg', icon: '⚖️', convert: false },
+    { key: 'bmi',      label: 'BMI',      unit: '',   icon: '📊', convert: false },
+    ...fields.map(f => ({ key: f.key, label: f.label, unit: measUnit, icon: '📏', color: f.color, convert: true }))
   ];
+
+  const cvt = (val, shouldConvert) =>
+    (shouldConvert && isInch && val != null) ? cmToInch(val) : val;
 
   function diff(a, b) {
     if (a == null || b == null) return null;
@@ -92,10 +99,13 @@ function renderProgressSummary(records, gender, profile) {
   }
 
   const cards = allKeys.filter(f => latest[f.key] != null || first[f.key] != null).map(f => {
-    const totalDiff  = diff(latest[f.key], first[f.key]);
-    const recentDiff = prev ? diff(latest[f.key], prev[f.key]) : null;
-    const latestVal  = latest[f.key] != null ? `${latest[f.key]} ${f.unit}` : '–';
-    const firstVal   = first[f.key]  != null ? `${first[f.key]} ${f.unit}`  : '–';
+    const latestV    = cvt(latest[f.key], f.convert);
+    const firstV     = cvt(first[f.key],  f.convert);
+    const prevV      = prev ? cvt(prev[f.key], f.convert) : null;
+    const totalDiff  = diff(latestV, firstV);
+    const recentDiff = prev ? diff(latestV, prevV) : null;
+    const latestVal  = latestV != null ? `${latestV} ${f.unit}` : '–';
+    const firstVal   = firstV  != null ? `${firstV} ${f.unit}`  : '–';
 
     return `
       <div class="summary-card">
@@ -156,6 +166,13 @@ function renderHistoryContent(gender, profile) {
         <input type="date" id="filter-to" style="padding:0.5rem 0.8rem;border:1.5px solid var(--border);border-radius:var(--radius-sm)">
       </div>
       <button class="btn btn-secondary" id="filter-reset-btn" style="height:fit-content;align-self:flex-end">รีเซ็ต</button>
+      <div class="filter-group" style="margin-left:auto">
+        <label style="font-size:0.82rem">หน่วยวัด</label>
+        <div class="unit-toggle" id="hist-unit-toggle">
+          <button type="button" class="unit-toggle__btn active" data-unit="cm">cm</button>
+          <button type="button" class="unit-toggle__btn" data-unit="inch">นิ้ว</button>
+        </div>
+      </div>
     </div>
 
     <!-- Table -->
@@ -234,14 +251,19 @@ function renderTable(records, gender, uid) {
     return;
   }
 
+  const isInch  = _histUnitInch;
+  const measUnit = isInch ? 'นิ้ว' : 'cm';
+
   tbody.innerHTML = records.map(r => {
     const cat   = getBMICategory(r.bmi);
     const cells = headers.map(h => {
-      if (h.key === 'date')   return `<td>${formatDate(r.date)}</td>`;
-      if (h.key === 'bmi')    return `<td>${r.bmi ?? '–'} ${cat ? `<span class="bmi-badge" style="color:${cat.color};background:${cat.bg};font-size:0.72rem">${cat.label}</span>` : ''}</td>`;
-      if (h.key === 'notes')  return `<td class="td-muted" style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.notes || '–'}</td>`;
-      const val = r[h.key];
-      return `<td>${val != null ? val + ' cm' : '<span class="td-muted">–</span>'}</td>`;
+      if (h.key === 'date')     return `<td>${formatDate(r.date)}</td>`;
+      if (h.key === 'weightKg') return `<td>${r.weightKg ?? '–'} kg</td>`;
+      if (h.key === 'bmi')      return `<td>${r.bmi ?? '–'} ${cat ? `<span class="bmi-badge" style="color:${cat.color};background:${cat.bg};font-size:0.72rem">${cat.label}</span>` : ''}</td>`;
+      if (h.key === 'notes')    return `<td class="td-muted" style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.notes || '–'}</td>`;
+      const raw = r[h.key];
+      const val = (isInch && raw != null) ? cmToInch(raw) : raw;
+      return `<td>${val != null ? val + ' ' + measUnit : '<span class="td-muted">–</span>'}</td>`;
     }).join('');
     return `<tr>
       ${cells}
@@ -269,7 +291,7 @@ function renderTable(records, gender, uid) {
   });
 }
 
-function bindHistoryFilters(gender, uid) {
+function bindHistoryFilters(gender, uid, profile) {
   document.getElementById('filter-from').addEventListener('change', () => applyFilters(gender, uid));
   document.getElementById('filter-to').addEventListener('change',   () => applyFilters(gender, uid));
   document.getElementById('filter-reset-btn').addEventListener('click', () => {
@@ -287,6 +309,23 @@ function bindHistoryFilters(gender, uid) {
       if (!found) return;
       if (_histMeasChart) { _histMeasChart.destroy(); _histMeasChart = null; }
       _histMeasChart = renderMeasurementChart('hist-meas-chart', _allRecords, found.key, found.label);
+    });
+  }
+
+  // Unit toggle
+  const unitToggle = document.getElementById('hist-unit-toggle');
+  if (unitToggle) {
+    unitToggle.addEventListener('click', e => {
+      const btn = e.target.closest('.unit-toggle__btn');
+      if (!btn) return;
+      const isInch = btn.dataset.unit === 'inch';
+      if (isInch === _histUnitInch) return;
+      _histUnitInch = isInch;
+      unitToggle.querySelectorAll('.unit-toggle__btn').forEach(b =>
+        b.classList.toggle('active', b.dataset.unit === (isInch ? 'inch' : 'cm'))
+      );
+      applyFilters(gender, uid);
+      renderProgressSummary(_allRecords, gender, profile);
     });
   }
 }

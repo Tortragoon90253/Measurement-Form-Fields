@@ -1,6 +1,9 @@
 // ===== ADD MEASUREMENT PAGE =====
 
+let _addUnitInch = false;
+
 async function initAddMeasurement() {
+  _addUnitInch = false;
   const { user, profile } = window.appState;
   const content = document.getElementById('add-content');
   if (!profile) {
@@ -305,6 +308,15 @@ function renderAddForm(profile) {
         </div>
       </div>
 
+      <!-- Unit toggle -->
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:0.6rem;margin-bottom:0.75rem">
+        <span style="font-size:0.82rem;color:var(--text-muted)">หน่วยวัด:</span>
+        <div class="unit-toggle" id="add-unit-toggle">
+          <button type="button" class="unit-toggle__btn active" data-unit="cm">cm</button>
+          <button type="button" class="unit-toggle__btn" data-unit="inch">นิ้ว</button>
+        </div>
+      </div>
+
       <!-- Gender-specific -->
       <fieldset class="measure-fieldset">
         <legend>สัดส่วน — ส่วนบน</legend>
@@ -397,6 +409,31 @@ function renderAddForm(profile) {
 
 // ===== FORM BINDING =====
 
+function setAddFormUnit(isInch) {
+  const MEAS_IDS = [
+    'f-shoulders', 'f-bust', 'f-underbust', 'f-chest',
+    'f-upperArmL', 'f-upperArmR', 'f-waist', 'f-hips',
+    'f-thighL',    'f-thighR',
+  ];
+  MEAS_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const v = parseFloat(el.value);
+    if (!isNaN(v) && v > 0) {
+      el.value = isInch ? cmToInch(v) : inchToCm(v);
+    }
+    el.step = isInch ? '0.1' : '0.5';
+  });
+  document.querySelectorAll('#measure-form .measure-unit').forEach(el => {
+    el.textContent = isInch ? 'นิ้ว' : 'cm';
+  });
+}
+
+function parseFieldCm(id) {
+  const v = parseFloatOrNull(id);
+  return (_addUnitInch && v != null) ? inchToCm(v) : v;
+}
+
 function bindAddForm(user, profile) {
   // Set today's date
   document.getElementById('f-date').value = todayInputValue();
@@ -404,6 +441,22 @@ function bindAddForm(user, profile) {
   // Live BMI calculation
   const weightInput = document.getElementById('f-weight');
   weightInput.addEventListener('input', () => updateBMIDisplay(profile.heightCm));
+
+  // Unit toggle
+  const unitToggle = document.getElementById('add-unit-toggle');
+  if (unitToggle) {
+    unitToggle.addEventListener('click', e => {
+      const btn = e.target.closest('.unit-toggle__btn');
+      if (!btn) return;
+      const isInch = btn.dataset.unit === 'inch';
+      if (isInch === _addUnitInch) return;
+      _addUnitInch = isInch;
+      unitToggle.querySelectorAll('.unit-toggle__btn').forEach(b =>
+        b.classList.toggle('active', b.dataset.unit === (isInch ? 'inch' : 'cm'))
+      );
+      setAddFormUnit(isInch);
+    });
+  }
 
   // Form submit
   document.getElementById('measure-form').addEventListener('submit', async (e) => {
@@ -425,16 +478,16 @@ function bindAddForm(user, profile) {
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       weightKg:  weightVal,
       bmi:       bmi,
-      chest:     parseFloatOrNull('f-chest'),
-      waist:     parseFloatOrNull('f-waist'),
-      hips:      parseFloatOrNull('f-hips'),
-      thighL:    parseFloatOrNull('f-thighL'),
-      thighR:    parseFloatOrNull('f-thighR'),
-      upperArmL: parseFloatOrNull('f-upperArmL'),
-      upperArmR: parseFloatOrNull('f-upperArmR'),
-      shoulders: isMale  ? parseFloatOrNull('f-shoulders') : null,
-      bust:      !isMale ? parseFloatOrNull('f-bust')      : null,
-      underbust: !isMale ? parseFloatOrNull('f-underbust') : null,
+      chest:     parseFieldCm('f-chest'),
+      waist:     parseFieldCm('f-waist'),
+      hips:      parseFieldCm('f-hips'),
+      thighL:    parseFieldCm('f-thighL'),
+      thighR:    parseFieldCm('f-thighR'),
+      upperArmL: parseFieldCm('f-upperArmL'),
+      upperArmR: parseFieldCm('f-upperArmR'),
+      shoulders: isMale  ? parseFieldCm('f-shoulders') : null,
+      bust:      !isMale ? parseFieldCm('f-bust')      : null,
+      underbust: !isMale ? parseFieldCm('f-underbust') : null,
       notes:     document.getElementById('f-notes').value.trim() || null,
     };
 

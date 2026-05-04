@@ -65,7 +65,19 @@ async function loginUser(username, password) {
   }
 
   try {
-    return await auth.signInWithEmailAndPassword(email, password);
+    const cred = await auth.signInWithEmailAndPassword(email, password);
+    // Apply admin-initiated password reset if pending
+    const prof = await getUserProfile(cred.user.uid);
+    if (prof && prof.pendingPasswordReset) {
+      try {
+        await cred.user.updatePassword(prof.pendingPasswordReset);
+        await clearPendingPasswordReset(cred.user.uid);
+        showToast('รหัสผ่านของคุณถูกอัปเดตโดยผู้ดูแลระบบ กรุณาจำรหัสผ่านใหม่', 'warning', 6000);
+      } catch (e) {
+        console.warn('Pending password reset failed:', e.code);
+      }
+    }
+    return cred;
   } catch (err) {
     if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' ||
         err.code === 'auth/invalid-credential') {

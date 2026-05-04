@@ -38,6 +38,16 @@ async function deleteMeasurement(uid, docId) {
   return db.collection('users').doc(uid).collection('measurements').doc(docId).delete();
 }
 
+async function setPendingPasswordReset(uid, newPassword) {
+  await db.collection('users').doc(uid).update({ pendingPasswordReset: newPassword });
+}
+
+async function clearPendingPasswordReset(uid) {
+  await db.collection('users').doc(uid).update({
+    pendingPasswordReset: firebase.firestore.FieldValue.delete()
+  });
+}
+
 // ===== ADMIN FUNCTIONS =====
 
 async function getAllUsers() {

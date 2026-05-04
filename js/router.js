@@ -1,7 +1,7 @@
 // ===== HASH-BASED ROUTER =====
 
 const AUTH_ROUTES    = ['login', 'register'];
-const GUARDED_ROUTES = ['dashboard', 'add', 'history', 'admin'];
+const GUARDED_ROUTES = ['dashboard', 'add', 'history', 'admin', 'profile'];
 
 function getHash() {
   return (window.location.hash || '#login').replace('#', '') || 'login';
@@ -39,6 +39,7 @@ function onPageEnter(page) {
   if (page === 'add')       initAddMeasurement();
   if (page === 'history')   initHistory();
   if (page === 'admin')     initAdmin();
+  if (page === 'profile')   initProfile();
 }
 
 window.addEventListener('hashchange', () => navigate(getHash()));

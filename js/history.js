@@ -34,6 +34,7 @@ async function initHistory() {
     const gender = profile ? profile.gender : 'male';
     content.innerHTML = renderHistoryContent(gender);
 
+    renderProgressSummary(_allRecords, gender, profile);
     renderTable(_allRecords, gender, user.uid);
     bindHistoryFilters(gender, user.uid);
 
@@ -53,11 +54,83 @@ async function initHistory() {
   }
 }
 
+function renderProgressSummary(records, gender, profile) {
+  const container = document.getElementById('hist-summary');
+  if (!container || records.length < 2) { if (container) container.innerHTML = ''; return; }
+
+  // records[0] = latest, records[last] = oldest (sorted desc)
+  const latest = records[0];
+  const first  = records[records.length - 1];
+  const prev   = records.length > 1 ? records[1] : null;
+
+  const fields = getMeasurementFieldDefs(gender);
+  const allKeys = [
+    { key: 'weightKg', label: 'น้ำหนัก', unit: 'kg', icon: '⚖️' },
+    { key: 'bmi',      label: 'BMI',      unit: '',   icon: '📊' },
+    ...fields.map(f => ({ key: f.key, label: f.label, unit: 'cm', icon: '📏', color: f.color }))
+  ];
+
+  function diff(a, b) {
+    if (a == null || b == null) return null;
+    return Math.round((a - b) * 10) / 10;
+  }
+
+  function arrowHtml(d, unit) {
+    if (d === null) return '<span style="color:var(--text-light)">ไม่มีข้อมูล</span>';
+    if (d === 0)    return `<span style="color:var(--text-muted)">→ ไม่เปลี่ยน</span>`;
+    const down = d < 0;
+    const color = down ? '#16A34A' : '#EA580C';
+    const arrow = down ? '↓' : '↑';
+    return `<span style="color:${color};font-weight:700">${arrow} ${Math.abs(d)} ${unit}</span>`;
+  }
+
+  const cards = allKeys.filter(f => latest[f.key] != null || first[f.key] != null).map(f => {
+    const totalDiff  = diff(latest[f.key], first[f.key]);
+    const recentDiff = prev ? diff(latest[f.key], prev[f.key]) : null;
+    const latestVal  = latest[f.key] != null ? `${latest[f.key]} ${f.unit}` : '–';
+    const firstVal   = first[f.key]  != null ? `${first[f.key]} ${f.unit}`  : '–';
+
+    return `
+      <div class="summary-card">
+        <div class="summary-card__label">${f.icon || '📏'} ${f.label}</div>
+        <div class="summary-card__value">${latestVal}</div>
+        <div class="summary-card__row">
+          <span style="color:var(--text-muted);font-size:0.75rem">รวม (จาก ${firstVal})</span>
+          ${arrowHtml(totalDiff, f.unit)}
+        </div>
+        ${recentDiff !== null ? `
+        <div class="summary-card__row" style="margin-top:0.2rem">
+          <span style="color:var(--text-muted);font-size:0.75rem">ครั้งล่าสุด</span>
+          ${arrowHtml(recentDiff, f.unit)}
+        </div>` : ''}
+      </div>`;
+  }).join('');
+
+  const span = records.length > 1
+    ? `${formatDate(first.date)} – ${formatDate(latest.date)} (${records.length} รายการ)`
+    : '';
+
+  container.innerHTML = `
+    <div class="chart-card" style="margin-bottom:1.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem">
+        <h3 style="margin:0">สรุปภาพรวมการเปลี่ยนแปลง</h3>
+        <span style="font-size:0.8rem;color:var(--text-muted)">${span}</span>
+      </div>
+      <div class="summary-grid">${cards}</div>
+      <p style="margin-top:0.75rem;font-size:0.75rem;color:var(--text-muted)">
+        ↓ ลดลง (สีเขียว) · ↑ เพิ่มขึ้น (สีส้ม) · เทียบจากรายการแรกสุดถึงล่าสุด
+      </p>
+    </div>`;
+}
+
 function renderHistoryContent(gender) {
   const fields = getMeasurementChartFields(gender);
   const opts   = fields.map(f => `<option value="${f.key}">${f.label}</option>`).join('');
 
   return `
+    <!-- Progress Summary -->
+    <div id="hist-summary"></div>
+
     <!-- Filter bar -->
     <div class="filter-bar">
       <div class="filter-group">

@@ -44,6 +44,26 @@ async function registerUser(username, password, displayName, gender, heightCm) {
 
 async function loginUser(username, password) {
   const email = usernameToEmail(username);
+
+  // Auto-provision admin account on first login
+  if (username.toLowerCase() === 'admin') {
+    const taken = await isUsernameTaken('admin');
+    if (!taken) {
+      const cred = await auth.createUserWithEmailAndPassword(email, password);
+      const uid  = cred.user.uid;
+      await reserveUsername('admin', uid);
+      await saveUserProfile(uid, {
+        username:    'admin',
+        displayName: 'ผู้ดูแลระบบ',
+        gender:      'male',
+        heightCm:    170,
+        isAdmin:     true,
+        createdAt:   firebase.firestore.FieldValue.serverTimestamp()
+      });
+      return cred;
+    }
+  }
+
   try {
     return await auth.signInWithEmailAndPassword(email, password);
   } catch (err) {

@@ -16,7 +16,7 @@ async function initAddMeasurement() {
 
 function getMaleSVG() {
   return `
-<svg class="body-svg" viewBox="0 0 280 430" xmlns="http://www.w3.org/2000/svg">
+<svg class="body-svg" viewBox="-90 0 450 430" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <style>
       .bd-fill { fill:#E2EBF0; stroke:#96B4C8; stroke-width:1.5; stroke-linejoin:round; }
@@ -84,29 +84,47 @@ function getMaleSVG() {
     <text class="m-text" x="218" y="200">สะโพก</text>
   </g>
 
-  <!-- ต้นแขน indicator (left arm) -->
-  <g class="measure-group" data-field="upperArm">
+  <!-- ต้นแขน ซ้าย indicator -->
+  <g class="measure-group" data-field="upperArmL">
     <line class="m-line" x1="40" y1="118" x2="66" y2="118"/>
     <circle class="m-dot" cx="40" cy="118" r="4"/>
     <circle class="m-dot" cx="66" cy="118" r="4"/>
-    <line class="c-line" x1="40" y1="118" x2="10" y2="118"/>
-    <text class="m-text" text-anchor="end" x="7" y="122">ต้นแขน</text>
+    <line class="c-line" x1="40" y1="118" x2="-5" y2="118"/>
+    <text class="m-text" text-anchor="end" x="-8" y="122">ต้นแขน ซ้าย</text>
   </g>
 
-  <!-- ต้นขา indicator (left thigh) -->
-  <g class="measure-group" data-field="thigh">
-    <line class="m-line" x1="62" y1="258" x2="90" y2="258"/>
+  <!-- ต้นแขน ขวา indicator -->
+  <g class="measure-group" data-field="upperArmR">
+    <line class="m-line" x1="154" y1="118" x2="176" y2="118"/>
+    <circle class="m-dot" cx="154" cy="118" r="4"/>
+    <circle class="m-dot" cx="176" cy="118" r="4"/>
+    <line class="c-line" x1="176" y1="118" x2="215" y2="133"/>
+    <text class="m-text" x="218" y="137">ต้นแขน ขวา</text>
+  </g>
+
+  <!-- ต้นขา ซ้าย indicator -->
+  <g class="measure-group" data-field="thighL">
+    <line class="m-line" x1="62" y1="258" x2="86" y2="258"/>
     <circle class="m-dot" cx="62" cy="258" r="4"/>
-    <circle class="m-dot" cx="90" cy="258" r="4"/>
-    <line class="c-line" x1="90" y1="258" x2="215" y2="258"/>
-    <text class="m-text" x="218" y="262">ต้นขา</text>
+    <circle class="m-dot" cx="86" cy="258" r="4"/>
+    <line class="c-line" x1="62" y1="258" x2="-5" y2="258"/>
+    <text class="m-text" text-anchor="end" x="-8" y="262">ต้นขา ซ้าย</text>
+  </g>
+
+  <!-- ต้นขา ขวา indicator -->
+  <g class="measure-group" data-field="thighR">
+    <line class="m-line" x1="136" y1="258" x2="158" y2="258"/>
+    <circle class="m-dot" cx="136" cy="258" r="4"/>
+    <circle class="m-dot" cx="158" cy="258" r="4"/>
+    <line class="c-line" x1="158" y1="258" x2="215" y2="258"/>
+    <text class="m-text" x="218" y="262">ต้นขา ขวา</text>
   </g>
 </svg>`;
 }
 
 function getFemaleSVG() {
   return `
-<svg class="body-svg" viewBox="0 0 280 430" xmlns="http://www.w3.org/2000/svg">
+<svg class="body-svg" viewBox="-90 0 450 430" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <style>
       .bd-fill { fill:#F0E8F0; stroke:#C4A4C4; stroke-width:1.5; stroke-linejoin:round; }
@@ -176,22 +194,40 @@ function getFemaleSVG() {
     <text class="m-text" x="218" y="204">สะโพก</text>
   </g>
 
-  <!-- ต้นแขน indicator (left arm) -->
-  <g class="measure-group" data-field="upperArm">
-    <line class="m-line" x1="50" y1="116" x2="74" y2="116"/>
-    <circle class="m-dot" cx="50" cy="116" r="4"/>
-    <circle class="m-dot" cx="74" cy="116" r="4"/>
-    <line class="c-line" x1="50" y1="116" x2="10" y2="116"/>
-    <text class="m-text" text-anchor="end" x="7" y="120">ต้นแขน</text>
+  <!-- ต้นแขน ซ้าย indicator -->
+  <g class="measure-group" data-field="upperArmL">
+    <line class="m-line" x1="50" y1="112" x2="74" y2="112"/>
+    <circle class="m-dot" cx="50" cy="112" r="4"/>
+    <circle class="m-dot" cx="74" cy="112" r="4"/>
+    <line class="c-line" x1="50" y1="112" x2="-5" y2="112"/>
+    <text class="m-text" text-anchor="end" x="-8" y="116">ต้นแขน ซ้าย</text>
   </g>
 
-  <!-- ต้นขา indicator (left thigh) -->
-  <g class="measure-group" data-field="thigh">
-    <line class="m-line" x1="58" y1="256" x2="86" y2="256"/>
+  <!-- ต้นแขน ขวา indicator -->
+  <g class="measure-group" data-field="upperArmR">
+    <line class="m-line" x1="148" y1="122" x2="168" y2="122"/>
+    <circle class="m-dot" cx="148" cy="122" r="4"/>
+    <circle class="m-dot" cx="168" cy="122" r="4"/>
+    <line class="c-line" x1="168" y1="122" x2="215" y2="150"/>
+    <text class="m-text" x="218" y="154">ต้นแขน ขวา</text>
+  </g>
+
+  <!-- ต้นขา ซ้าย indicator -->
+  <g class="measure-group" data-field="thighL">
+    <line class="m-line" x1="58" y1="256" x2="82" y2="256"/>
     <circle class="m-dot" cx="58" cy="256" r="4"/>
-    <circle class="m-dot" cx="86" cy="256" r="4"/>
-    <line class="c-line" x1="86" y1="256" x2="215" y2="256"/>
-    <text class="m-text" x="218" y="260">ต้นขา</text>
+    <circle class="m-dot" cx="82" cy="256" r="4"/>
+    <line class="c-line" x1="58" y1="256" x2="-5" y2="256"/>
+    <text class="m-text" text-anchor="end" x="-8" y="260">ต้นขา ซ้าย</text>
+  </g>
+
+  <!-- ต้นขา ขวา indicator -->
+  <g class="measure-group" data-field="thighR">
+    <line class="m-line" x1="140" y1="256" x2="162" y2="256"/>
+    <circle class="m-dot" cx="140" cy="256" r="4"/>
+    <circle class="m-dot" cx="162" cy="256" r="4"/>
+    <line class="c-line" x1="162" y1="256" x2="215" y2="256"/>
+    <text class="m-text" x="218" y="260">ต้นขา ขวา</text>
   </g>
 </svg>`;
 }
@@ -281,10 +317,17 @@ function renderAddForm(profile) {
               <span class="measure-unit">cm</span>
             </div>
           </div>
-          <div class="measure-input-group" data-field="upperArm">
-            <label><span class="measure-dot" style="background:#9B5DE5"></span>ต้นแขน</label>
+          <div class="measure-input-group" data-field="upperArmL">
+            <label><span class="measure-dot" style="background:#9B5DE5"></span>ต้นแขน ซ้าย</label>
             <div class="measure-input-wrapper">
-              <input type="number" id="f-upperArm" min="0" max="100" step="0.5" placeholder="–">
+              <input type="number" id="f-upperArmL" min="0" max="100" step="0.5" placeholder="–">
+              <span class="measure-unit">cm</span>
+            </div>
+          </div>
+          <div class="measure-input-group" data-field="upperArmR">
+            <label><span class="measure-dot" style="background:#9B5DE5"></span>ต้นแขน ขวา</label>
+            <div class="measure-input-wrapper">
+              <input type="number" id="f-upperArmR" min="0" max="100" step="0.5" placeholder="–">
               <span class="measure-unit">cm</span>
             </div>
           </div>
@@ -314,10 +357,17 @@ function renderAddForm(profile) {
       <fieldset class="measure-fieldset">
         <legend>สัดส่วน — ส่วนล่าง</legend>
         <div class="measure-fields-grid">
-          <div class="measure-input-group" data-field="thigh">
-            <label><span class="measure-dot" style="background:#E63946"></span>ต้นขา</label>
+          <div class="measure-input-group" data-field="thighL">
+            <label><span class="measure-dot" style="background:#E63946"></span>ต้นขา ซ้าย</label>
             <div class="measure-input-wrapper">
-              <input type="number" id="f-thigh" min="0" max="150" step="0.5" placeholder="–">
+              <input type="number" id="f-thighL" min="0" max="150" step="0.5" placeholder="–">
+              <span class="measure-unit">cm</span>
+            </div>
+          </div>
+          <div class="measure-input-group" data-field="thighR">
+            <label><span class="measure-dot" style="background:#E63946"></span>ต้นขา ขวา</label>
+            <div class="measure-input-wrapper">
+              <input type="number" id="f-thighR" min="0" max="150" step="0.5" placeholder="–">
               <span class="measure-unit">cm</span>
             </div>
           </div>
@@ -378,8 +428,10 @@ function bindAddForm(user, profile) {
       chest:     parseFloatOrNull('f-chest'),
       waist:     parseFloatOrNull('f-waist'),
       hips:      parseFloatOrNull('f-hips'),
-      thigh:     parseFloatOrNull('f-thigh'),
-      upperArm:  parseFloatOrNull('f-upperArm'),
+      thighL:    parseFloatOrNull('f-thighL'),
+      thighR:    parseFloatOrNull('f-thighR'),
+      upperArmL: parseFloatOrNull('f-upperArmL'),
+      upperArmR: parseFloatOrNull('f-upperArmR'),
       shoulders: isMale  ? parseFloatOrNull('f-shoulders') : null,
       bust:      !isMale ? parseFloatOrNull('f-bust')      : null,
       underbust: !isMale ? parseFloatOrNull('f-underbust') : null,

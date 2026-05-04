@@ -28,12 +28,14 @@ function showPage(pageId) {
   window.scrollTo(0, 0);
 }
 
-function showNav(username) {
+function showNav(displayName, isAdmin = false) {
   const nav = document.getElementById('main-nav');
   nav.classList.remove('hidden');
-  if (username) {
-    document.getElementById('nav-username').textContent = username;
+  if (displayName) {
+    document.getElementById('nav-username').textContent = displayName;
   }
+  const adminLi = document.getElementById('nav-admin-li');
+  if (adminLi) adminLi.classList.toggle('hidden', !isAdmin);
 }
 
 function hideNav() {

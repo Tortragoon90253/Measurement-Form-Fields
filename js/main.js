@@ -8,7 +8,8 @@ auth.onAuthStateChanged(async (user) => {
       const profile = await getUserProfile(user.uid);
       window.appState = { user, profile };
 
-      showNav(profile ? profile.displayName : user.displayName);
+      const isAdmin = !!(profile && profile.isAdmin);
+      showNav(profile ? profile.displayName : user.displayName, isAdmin);
 
       const currentHash = getHash();
       if (AUTH_ROUTES.includes(currentHash)) {

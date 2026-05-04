@@ -123,11 +123,13 @@ function renderMeasurementSummary(latest, profile) {
 
 function getMeasurementFieldDefs(gender) {
   const common = [
-    { key: 'chest',    label: 'อก',       color: '#2E86AB' },
-    { key: 'waist',    label: 'เอว',      color: '#F6AE2D' },
-    { key: 'hips',     label: 'สะโพก',    color: '#A8D5BA' },
-    { key: 'thigh',    label: 'ต้นขา',    color: '#E63946' },
-    { key: 'upperArm', label: 'ต้นแขน',   color: '#9B5DE5' },
+    { key: 'chest',     label: 'อก',            color: '#2E86AB' },
+    { key: 'waist',     label: 'เอว',           color: '#F6AE2D' },
+    { key: 'hips',      label: 'สะโพก',         color: '#A8D5BA' },
+    { key: 'thighL',    label: 'ต้นขา ซ้าย',   color: '#E63946' },
+    { key: 'thighR',    label: 'ต้นขา ขวา',    color: '#E63946' },
+    { key: 'upperArmL', label: 'ต้นแขน ซ้าย',  color: '#9B5DE5' },
+    { key: 'upperArmR', label: 'ต้นแขน ขวา',   color: '#9B5DE5' },
   ];
   if (gender === 'male') {
     return [...common, { key: 'shoulders', label: 'ไหล่', color: '#0EA5E9' }];

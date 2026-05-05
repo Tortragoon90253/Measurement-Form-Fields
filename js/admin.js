@@ -42,6 +42,15 @@ function renderAdminPanel(users) {
       <td>${formatDate(u.createdAt)}</td>
       <td class="td-actions" style="display:flex;gap:0.25rem;justify-content:flex-end">
         ${!u.isAdmin ? `
+          <button class="btn btn-secondary btn-sm admin-view-history-btn"
+            data-uid="${u.uid}" data-username="${u.username || u.uid}"
+            data-displayname="${u.displayName || ''}" data-gender="${u.gender || 'male'}"
+            title="ดูประวัติการบันทึก" style="padding:0.35rem 0.6rem;font-size:0.8rem">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+            ประวัติ
+          </button>
           <button class="btn btn-secondary btn-sm admin-reset-pw-btn"
             data-uid="${u.uid}" data-username="${u.username || u.uid}"
             title="เปลี่ยนรหัสผ่าน" style="padding:0.35rem 0.6rem;font-size:0.8rem">
@@ -105,6 +114,27 @@ function renderAdminPanel(users) {
       </div>
     </div>
 
+    <!-- Audit Log Modal -->
+    <div id="admin-history-modal" class="modal-overlay hidden">
+      <div class="modal" style="max-width:900px;width:95vw">
+        <div class="modal-header">
+          <div>
+            <h3>ประวัติการบันทึกข้อมูล</h3>
+            <p id="admin-history-modal-subtitle" style="font-size:0.85rem;color:var(--text-muted);margin-top:0.2rem"></p>
+          </div>
+          <button class="modal-close" id="admin-history-modal-close">&times;</button>
+        </div>
+        <div class="modal-body modal-body--scroll" style="padding:0">
+          <div id="admin-history-modal-content" style="padding:1.25rem">
+            <div class="loading-state"><div class="spinner"></div><p>กำลังโหลด...</p></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="admin-history-modal-close-btn">ปิด</button>
+        </div>
+      </div>
+    </div>
+
     <div class="table-card">
       <div style="display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.25rem 0">
         <h3 style="font-size:1rem;font-weight:700">ผู้ใช้ทั้งหมด
@@ -129,8 +159,77 @@ function renderAdminPanel(users) {
     </div>`;
 }
 
+function renderAuditTable(records, gender) {
+  const isMale = gender === 'male';
+  const headers = getTableHeaders(isMale);
+  const readOnlyHeaders = headers.filter(h => h.key !== 'notes');
+
+  const headHtml = `<tr>${readOnlyHeaders.map(h => `<th>${h.label}</th>`).join('')}<th>หมายเหตุ</th></tr>`;
+  if (!records.length) {
+    return `<table><thead>${headHtml}</thead><tbody>
+      <tr><td colspan="${readOnlyHeaders.length + 1}" style="text-align:center;color:var(--text-muted);padding:2rem">ยังไม่มีข้อมูลการบันทึก</td></tr>
+    </tbody></table>`;
+  }
+
+  const rows = records.map(r => {
+    const cat = getBMICategory(r.bmi);
+    const cells = readOnlyHeaders.map(h => {
+      if (h.key === 'date')     return `<td>${formatDate(r.date)}</td>`;
+      if (h.key === 'weightKg') return `<td>${r.weightKg ?? '–'} kg</td>`;
+      if (h.key === 'bmi')      return `<td>${r.bmi ?? '–'} ${cat ? `<span class="bmi-badge" style="color:${cat.color};background:${cat.bg};font-size:0.72rem">${cat.label}</span>` : ''}</td>`;
+      const val = r[h.key];
+      return `<td>${val != null ? val + ' cm' : '<span class="td-muted">–</span>'}</td>`;
+    }).join('');
+    return `<tr>${cells}<td class="td-muted" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.notes || '–'}</td></tr>`;
+  }).join('');
+
+  return `<table><thead>${headHtml}</thead><tbody>${rows}</tbody></table>`;
+}
+
 function bindAdminActions() {
   let _targetUid = null;
+
+  // View history buttons
+  const histModal       = document.getElementById('admin-history-modal');
+  const histModalContent = document.getElementById('admin-history-modal-content');
+  const histModalSub    = document.getElementById('admin-history-modal-subtitle');
+  const closeHistModal  = () => histModal.classList.add('hidden');
+
+  document.getElementById('admin-history-modal-close').addEventListener('click', closeHistModal);
+  document.getElementById('admin-history-modal-close-btn').addEventListener('click', closeHistModal);
+  histModal.addEventListener('click', e => { if (e.target === histModal) closeHistModal(); });
+
+  document.querySelectorAll('.admin-view-history-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const uid         = btn.dataset.uid;
+      const username    = btn.dataset.username;
+      const displayName = btn.dataset.displayname;
+      const gender      = btn.dataset.gender || 'male';
+
+      histModalSub.textContent = `${displayName ? displayName + ' · ' : ''}@${username}`;
+      histModalContent.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>กำลังโหลด...</p></div>';
+      histModal.classList.remove('hidden');
+
+      try {
+        const records = await getMeasurements(uid);
+        if (!records.length) {
+          histModalContent.innerHTML = `
+            <div class="empty-state" style="padding:2rem 0">
+              <p style="color:var(--text-muted)">ผู้ใช้นี้ยังไม่มีประวัติการบันทึกข้อมูล</p>
+            </div>`;
+          return;
+        }
+        const countText = `${records.length} รายการ · ล่าสุด ${formatDate(records[0].date)}`;
+        histModalContent.innerHTML = `
+          <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem">${countText}</p>
+          <div class="table-wrapper">${renderAuditTable(records, gender)}</div>`;
+      } catch (err) {
+        console.error(err);
+        histModalContent.innerHTML = `
+          <p style="color:var(--danger);padding:1rem">โหลดข้อมูลไม่สำเร็จ กรุณาตรวจสอบ Firestore Rules</p>`;
+      }
+    });
+  });
 
   // Delete buttons
   document.querySelectorAll('[data-delete-uid]').forEach(btn => {

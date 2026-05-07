@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Option 4: Ruler/measuring tape with body silhouette -->
+  <rect width="32" height="32" rx="8" fill="#A8D5BA"/>
+  <!-- Ruler strip across middle -->
+  <rect x="3" y="13" width="26" height="6" rx="3" fill="#2E86AB"/>
+  <!-- Tick marks on ruler -->
+  <line x1="8" y1="13" x2="8" y2="16" stroke="white" stroke-width="1.2"/>
+  <line x1="12" y1="13" x2="12" y2="15" stroke="white" stroke-width="1"/>
+  <line x1="16" y1="13" x2="16" y2="16" stroke="white" stroke-width="1.2"/>
+  <line x1="20" y1="13" x2="20" y2="15" stroke="white" stroke-width="1"/>
+  <line x1="24" y1="13" x2="24" y2="16" stroke="white" stroke-width="1.2"/>
+  <!-- Human silhouette above ruler -->
+  <circle cx="16" cy="7" r="3" fill="#1e6a8a"/>
+  <path d="M12 10.5 Q12 9.5 16 9.5 Q20 9.5 20 10.5 L19 13 L13 13 Z" fill="#1e6a8a"/>
+  <!-- Legs below ruler -->
+  <path d="M13 19 L12 26 M15 19 L14.5 26" stroke="#1e6a8a" stroke-width="2" stroke-linecap="round"/>
+  <path d="M19 19 L20 26 M17 19 L17.5 26" stroke="#1e6a8a" stroke-width="2" stroke-linecap="round"/>
+</svg>

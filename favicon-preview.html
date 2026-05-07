@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Favicon Preview — Body Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Sarabun', sans-serif;
+      background: #F7F9FC;
+      color: #1C2B36;
+      padding: 40px 24px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #2E86AB;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #6B8CA4;
+      margin-bottom: 40px;
+      font-size: 0.95rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px 24px;
+      box-shadow: 0 2px 16px rgba(46,134,171,0.10);
+      border: 2px solid transparent;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .card:hover {
+      border-color: #2E86AB;
+      box-shadow: 0 4px 24px rgba(46,134,171,0.22);
+    }
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #6B8CA4;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+    .sizes-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .size-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .size-label {
+      font-size: 0.7rem;
+      color: #94aab8;
+    }
+    .size-item img {
+      image-rendering: pixelated;
+      border-radius: 3px;
+    }
+    /* Simulated browser tab */
+    .tab-sim {
+      background: #e8edf2;
+      border-radius: 8px 8px 0 0;
+      padding: 8px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: #1C2B36;
+      border: 1px solid #d0d9e3;
+      border-bottom: none;
+      margin-top: 12px;
+    }
+    .tab-sim img { border-radius: 2px; }
+    .concept {
+      font-size: 0.88rem;
+      color: #6B8CA4;
+      margin-top: 16px;
+      line-height: 1.6;
+    }
+    .badge {
+      display: inline-block;
+      background: #d4edf7;
+      color: #2E86AB;
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 48px;
+      color: #94aab8;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🎨 Body Tracker — Favicon Preview</h1>
+<p class="subtitle">5 แบบ ให้เลือก • คลิกที่ card เพื่อดู concept</p>
+
+<div class="grid">
+
+  <!-- Option 1 -->
+  <div class="card">
+    <div class="card-title">แบบที่ 1 — Human + Graph</div>
+    <div class="sizes-row">
+      <div class="size-item">
+        <img src="favicon-1.svg" width="16" height="16" alt="16px">
+        <span class="size-label">16px</span>
+      </div>
+      <div class="size-item">
+        <img src="favicon-1.svg" width="32" height="32" alt="32px">
+        <span class="size-label">32px</span>
+      </div>
+      <div class="size-item">
+        <img src="favicon-1.svg" width="64" height="64" alt="64px">
+        <span class="size-label">64px</span>
+      </div>
+      <div class="size-item">
+        <img src="favicon-1.svg" width="128" height="128" alt="128px">
+        <span class="size-label">128px</span>
+      </div>
+    </div>
+    <div class="tab-sim">
+      <img src="favicon-1.svg" width="16" height="16">
+      Body Tracker — ติดตามสัดส่วนร่างกาย
+    </div>
+    <p class="concept">
+      <span class="badge">ฟ้า</span><span class="badge">เหลือง</span><br><br>
+      ซิลูเอตมนุษย์โปร่งแสง + เส้น graph สีเหลือง บนพื้นสีฟ้าหลัก
+      สื่อถึงการติดตามข้อมูลร่างกายโดยตรง
+    </p>
+  </div>
+
+  <!-- Option 2 -->
+  <div class="card">
+    <div class="card-title">แบบที่ 2 — Tape Measure Circle</div>
+    <div class="sizes-row">
+      <div class="size-item">
+        <img src="favicon-2.svg" width="16" height="16" alt="16px">
+        <span class="size-label">16px</span>
+      </div>
+      <div class="size-item">
+        <img src="favicon-2.svg" width="32" height="32" alt="32px">
+        <span class="size-label">32px</span>
+      </div>
+      <div class="size-item">
+        <img src="favicon-2.svg" width="64" height="64" alt="64px">
+        <span class="size-label">64px</span>
+      </div>
+      <div class="size-item">
+        <img src="favicon-2.svg" width="128" height="128" alt="128px">
+        <span class="size-label">128px</span>
+      </div>
+    </div>
+    <div class="tab-sim">
+      <img src="favicon-2.svg" width="16" height="16">
+      Body Tracker — ติดตามสัดส่วนร่างกาย
+    </div>
+    <p class="concept">
+      <span class="badge">ฟ้าเข้ม</span><span class="badge">เหลือง</span><br><br>
+      วงกลมสายวัดสีเหลือง ล้อมรอบไอคอนคนตรงกลาง
+      สื่อถึง "การวัดสัดส่วน" ได้ชัดเจนมาก
+    </p>
+  </div>
+
+  <!-- Option 3 -->
+  <div class="card">
+    <div class="card-title">แบบที่ 3 — BT Pulse Monogram</div>
+    <div class="sizes-row">
+      <div class="size-item">
+        <img src="favicon-3.svg" width="16" height="16" alt="16px">
+        <span class="size-label">16px</span>
+      </div>
+      <div class="size-item">
+        <img src="favicon-3.svg" width="32" height="32" alt="32px">
+        <span class="size-label">32px</span>
+      </div>
+      <div class="size-item">
+        <img src="favicon-3.svg" width="64" height="64" alt="64px">
+        <span class="size-label">64px</span>
+      </div>
+      <div class="size-item">
+        <img src="favicon-3.svg" width="128" height="128" alt="128px">
+        <span class="size-label">128px</span>
+      </div>
+    </div>
+    <div class="tab-sim">
+      <img src="favicon-3.svg" width="16" height="16">
+      Body Tracker — ติดตามสัดส่วนร่างกาย
+    </div>
+    <p class="concept">
+      <span class="badge">ฟ้า</span><span class="badge">เหลือง</span><br><br>
+      ตัวอักษร "BT" ตัวหนา บน pulse line สีเหลือง
+      สไตล์ branding สะอาด อ่านได้แม้ขนาดเล็ก
+    </p>
+  </div>
+
+  <!-- Option 4 -->
+  <div class="card">
+    <div class="card-title">แบบที่ 4 — Ruler + Figure</div>
+    <div class="sizes-row">
+      <div class="size-item">
+        <img src="favicon-4.svg" width="16" height="16" alt="16px">
+        <span class="size-label">16px</span>
+      </div>
+      <div class="size-item">
+        <img src="favicon-4.svg" width="32" height="32" alt="32px">
+        <span class="size-label">32px</span>
+      </div>
+      <div class="size-item">
+        <img src="favicon-4.svg" width="64" height="64" alt="64px">
+        <span class="size-label">64px</span>
+      </div>
+      <div class="size-item">
+        <img src="favicon-4.svg" width="128" height="128" alt="128px">
+        <span class="size-label">128px</span>
+      </div>
+    </div>
+    <div class="tab-sim">
+      <img src="favicon-4.svg" width="16" height="16">
+      Body Tracker — ติดตามสัดส่วนร่างกาย
+    </div>
+    <p class="concept">
+      <span class="badge">เขียว</span><span class="badge">ฟ้า</span><br><br>
+      ไม้บรรทัดขวางกลาง ไอคอนคนอยู่เหนือ-ใต้
+      สื่อถึง "การวัด" ตรงไปตรงมา พื้นหลังสีเขียวมิ้นสดใส
+    </p>
+  </div>
+
+  <!-- Option 5 -->
+  <div class="card">
+    <div class="card-title">แบบที่ 5 — Shield + Bar Chart</div>
+    <div class="sizes-row">
+      <div class="size-item">
+        <img src="favicon-5.svg" width="16" height="16" alt="16px">
+        <span class="size-label">16px</span>
+      </div>
+      <div class="size-item">
+        <img src="favicon-5.svg" width="32" height="32" alt="32px">
+        <span class="size-label">32px</span>
+      </div>
+      <div class="size-item">
+        <img src="favicon-5.svg" width="64" height="64" alt="64px">
+        <span class="size-label">64px</span>
+      </div>
+      <div class="size-item">
+        <img src="favicon-5.svg" width="128" height="128" alt="128px">
+        <span class="size-label">128px</span>
+      </div>
+    </div>
+    <div class="tab-sim">
+      <img src="favicon-5.svg" width="16" height="16">
+      Body Tracker — ติดตามสัดส่วนร่างกาย
+    </div>
+    <p class="concept">
+      <span class="badge">เข้ม</span><span class="badge">ฟ้า</span><span class="badge">เหลือง</span><span class="badge">เขียว</span><br><br>
+      โล่ทรงร่างกาย + bar chart 3 แท่งสีต่างกัน + ลูกศรขึ้น
+      สื่อถึง "ความก้าวหน้า" และ "ความปลอดภัยของข้อมูล"
+    </p>
+  </div>
+
+</div>
+
+<p class="footer">แจ้งเลขแบบที่ชอบ แล้วจะใส่ใน index.html ให้ทันที</p>
+
+</body>
+</html>

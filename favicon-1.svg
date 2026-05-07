@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Option 1: Human silhouette + graph line -->
+  <rect width="32" height="32" rx="8" fill="#2E86AB"/>
+  <!-- Head -->
+  <circle cx="16" cy="8" r="3.5" fill="white"/>
+  <!-- Body silhouette simplified -->
+  <path d="M10 13 Q10 11 16 11 Q22 11 22 13 L20 22 L18 22 L17 17 L15 17 L14 22 L12 22 Z" fill="white" opacity="0.3"/>
+  <!-- Graph line overlay -->
+  <polyline points="8,24 12,20 16,22 20,16 24,18" stroke="#F6AE2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Dots on graph -->
+  <circle cx="8" cy="24" r="1.5" fill="#F6AE2D"/>
+  <circle cx="16" cy="22" r="1.5" fill="#F6AE2D"/>
+  <circle cx="24" cy="18" r="1.5" fill="#F6AE2D"/>
+</svg>

@@ -51,6 +51,7 @@ async function initHistory() {
       ? calculateBMI(targetWeightKg, profile.heightCm) : 22.0;
     _histBMIChart = renderBMIChart('hist-bmi-chart', _allRecords, savedTargetBMI);
     bindBMITargetInput(user, profile);
+    renderBodySimulation('hist-simulation', _allRecords, profile);
 
   } catch (err) {
     console.error(err);
@@ -147,6 +148,9 @@ function renderHistoryContent(gender, profile) {
     : `<span id="bmi-target-preview" style="color:var(--text-muted)">–</span>`;
 
   return `
+    <!-- Body Simulation -->
+    <div id="hist-simulation"></div>
+
     <!-- Progress Summary -->
     <div id="hist-summary"></div>
 

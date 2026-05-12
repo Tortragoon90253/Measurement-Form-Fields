@@ -43,19 +43,15 @@ async function initHistory() {
     bindHistoryFilters(gender, user.uid, profile);
 
     // Charts
-    if (_allRecords.length > 1) {
-      _histWeightChart = renderMiniWeightChart('hist-weight-chart', _allRecords);
-      const firstField = getMeasurementChartFields(gender)[0];
-      _histMeasChart   = renderMeasurementChart('hist-meas-chart', _allRecords, firstField.key, firstField.label);
-      const targetWeightKg = profile && profile.targetWeightKg;
-      const savedTargetBMI = (targetWeightKg && profile && profile.heightCm)
-        ? calculateBMI(targetWeightKg, profile.heightCm) : 22.0;
-      _histBMIChart = renderBMIChart('hist-bmi-chart', _allRecords, savedTargetBMI);
-      bindBMITargetInput(user, profile);
-    } else {
-      document.getElementById('hist-charts-area').innerHTML =
-        '<p style="color:var(--text-muted);font-size:0.9rem;padding:1rem">ต้องการข้อมูลอย่างน้อย 2 รายการเพื่อแสดงกราฟ</p>';
-    }
+    _histWeightChart = renderMiniWeightChart('hist-weight-chart', _allRecords);
+    const firstField = getMeasurementChartFields(gender)[0];
+    _histMeasChart   = renderMeasurementChart('hist-meas-chart', _allRecords, firstField.key, firstField.label);
+    const targetWeightKg = profile && profile.targetWeightKg;
+    const savedTargetBMI = (targetWeightKg && profile && profile.heightCm)
+      ? calculateBMI(targetWeightKg, profile.heightCm) : 22.0;
+    _histBMIChart = renderBMIChart('hist-bmi-chart', _allRecords, savedTargetBMI);
+    bindBMITargetInput(user, profile);
+    renderBodySimulation('hist-simulation', _allRecords, profile);
 
   } catch (err) {
     console.error(err);
@@ -65,7 +61,7 @@ async function initHistory() {
 
 function renderProgressSummary(records, gender, profile) {
   const container = document.getElementById('hist-summary');
-  if (!container || records.length < 2) { if (container) container.innerHTML = ''; return; }
+  if (!container || records.length < 1) { if (container) container.innerHTML = ''; return; }
 
   // records[0] = latest, records[last] = oldest (sorted desc)
   const latest = records[0];
@@ -152,6 +148,9 @@ function renderHistoryContent(gender, profile) {
     : `<span id="bmi-target-preview" style="color:var(--text-muted)">–</span>`;
 
   return `
+    <!-- Body Simulation -->
+    <div id="hist-simulation"></div>
+
     <!-- Progress Summary -->
     <div id="hist-summary"></div>
 

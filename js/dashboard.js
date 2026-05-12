@@ -34,7 +34,7 @@ async function initDashboard() {
 
     // Destroy previous chart instance
     if (_dashChart) { _dashChart.destroy(); _dashChart = null; }
-    if (recent.length > 1) {
+    if (recent.length >= 1) {
       _dashChart = renderMiniWeightChart('dash-weight-chart', recent);
     }
 
